@@ -27,6 +27,16 @@ public class CourseController {
         return courseRepository.findAll();
     }
 
+
+
+    @GetMapping("{/id}")
+    public ResponseEntity<Course> findById( @PathVariable Long id) {
+        return courseRepository.findById(id)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.notFound().build());
+
+    }
+
     //@RequestMapping(method = RequestMethod.POST)
     @PostMapping
     @ResponseStatus(code =HttpStatus.CREATED)
