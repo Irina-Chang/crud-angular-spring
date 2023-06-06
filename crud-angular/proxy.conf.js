@@ -7,7 +7,7 @@ const proxy_config = [
     pathRewrite: {
       '^/api': ''
     },
-    changeOrigin: true,
+    changeOrigin: false,
   }
 ];
 

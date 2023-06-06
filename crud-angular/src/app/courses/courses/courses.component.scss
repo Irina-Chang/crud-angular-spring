@@ -7,11 +7,17 @@ border-radius: 3px;
   border-radius: 6px;
 }
 
-.table {
-  padding: 15px;
-  margin: 25px;
-  width: 100%;
-  border-radius: 4px;
+mat-card{
+  max-width: 80%;
+  margin: 2em;
+  text-align: center;
+}
+
+.column-flex{
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+
 }
 
 .loading-spinner{
