@@ -29,7 +29,7 @@ public class CourseController {
 
 
 
-    @GetMapping("{/id}")
+    @GetMapping("{id}")
     public ResponseEntity<Course> findById( @PathVariable Long id) {
         return courseRepository.findById(id)
                 .map(record -> ResponseEntity.ok().body(record))
@@ -45,4 +45,17 @@ public class CourseController {
   // return ResponseEntity.status(HttpStatus.CREATED)
 //.body(courseRepository.save(course));
     }
+
+    public Course update(@PathVariable Long id, @RequestBody Course course){
+        //return courseRepository.update();
+        return courseRepository.findById(id)
+                .map((recordFound -> {
+                    recordFound.setName(course.getName());
+                    recordFound.setCategoria (course.getCategoria());
+                    Course updated = (Course) courseRepository.save(recordFound);
+                    return ResponseEntity.ok().body(updated);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 }
