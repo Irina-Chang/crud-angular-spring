@@ -1,10 +1,11 @@
 import { Component, OnInit} from '@angular/core';
 import { Location } from "@angular/common"
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { FormControl, FormGroup,NonNullableFormBuilder } from "@angular/forms";
+import {FormControl, FormGroup, NonNullableFormBuilder, Validators} from "@angular/forms";
 
 import { CoursesService } from "../../services/courses.service";
 import { ActivatedRoute } from "@angular/router";
+import {Course} from "../../model/course";
 
 @Component({
   selector: 'app-course-form',
@@ -12,13 +13,7 @@ import { ActivatedRoute } from "@angular/router";
   styleUrls: ['./course-form.component.scss']
 })
 export class CourseFormComponent implements OnInit {
-
-  form = this.formBuilder.group(controls: {
-    _id:[' ']
-    name:[' ']
-  categoria: [' ']
-});
-
+  form!: FormGroup;
 
 constructor(private formBuilder: NonNullableFormBuilder,
   private service: CoursesService,
@@ -29,16 +24,17 @@ constructor(private formBuilder: NonNullableFormBuilder,
 
   ngOnInit(): void  {
   const course: Course = this.route.snapshot.data['course'];
-  this.form.setValue({
-    _id: course.id,
-    name: course.name,
-    categoria: course.categoria
+this.form = this.formBuilder.group({
+  _id: [course._id],
+  name: [course.name, [Validators.required,
+    Validators.minLength(5),
+    Validators.maxLength(100)]],
+  categoria: [course.categoria, [Validators.required]]
   });
-}
-
-
-
-  onSubmit(): {
+    console.log(this.form);
+    console.log(this.form.value);
+  }
+  onSubmit() {
     this.service.save(this.form.value)
       .subscribe(result => this.onSuccess(), error => this.onError());
   }
@@ -55,5 +51,27 @@ this.location.back()
   private onError()  {
     this.snackBar.open('Erro ao salvar curso!', '', {duration: 3000});
   }
+    getErrorMessage(fieldName: string) {
+      const field = this.form.get(fieldName);
+
+      if (field?.hasError('required')) {
+        return 'Campo obrigatório';
+      }
+
+      if (field?.hasError('minlength')) {
+        const requiredLength: number = field.errors ? field.errors['minlength']['requiredLength'] : 5;
+        return `Tamanho mínimo precisa ser de ${requiredLength} caracteres.`;
+      }
+
+      if (field?.hasError('maxlength')) {
+        const requiredLength: number = field.errors ? field.errors['maxlength']['requiredLength'] : 200;
+        return `Tamanho máximo excedido de ${requiredLength} caracteres.`;
+      }
+
+      return 'Campo Inválido';
+    }
+
+  // protected readonly name = name;
+  // protected readonly name = name;
 }
 
