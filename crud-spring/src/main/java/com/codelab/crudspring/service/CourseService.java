@@ -1,6 +1,6 @@
 package com.codelab.crudspring.service;
 
-
+import com.codelab.crudspring.exception.RecordNotFoundException;
 import com.codelab.crudspring.model.Course;
 import com.codelab.crudspring.repository.CourseRepository;
 import jakarta.validation.Valid;
@@ -25,29 +25,24 @@ public class CourseService {
     public List<Course> list()
     {return courseRepository.findAll();}
 
-    public Optional<Course> findById(@PathVariable @NotNull @Positive Long id){
-        return courseRepository.findById(id);}
+    public Course findById(@PathVariable @NotNull @Positive Long id){
+        return courseRepository.findById(id).orElseThrow(()->new RecordNotFoundException(id));}
 
     public Course create(@Valid Course course){
         return  courseRepository.save(course);
     }
 
-    public Optional<Course> update(@NotNull @Positive Long id, @Valid Course course){
+    public Course update(@NotNull @Positive Long id, @Valid Course course){
         return  courseRepository.findById(id)
                 .map(recordFound ->{
                     recordFound.setName(course.getName());
                     recordFound.setCategoria(course.getCategoria());
                     return courseRepository.save(recordFound);
-                });
+                }).orElseThrow(()->new RecordNotFoundException(id));
     }
 
-    public boolean delete(@PathVariable @NotNull @Positive Long id){
-        return courseRepository.findById(id)
-                .map(recordFound -> {
-                    courseRepository.deleteById(id);
-                    return true;
-                })
-                .orElse(false);
+    public void delete(@NotNull @Positive Long id) {
+        courseRepository.delete(courseRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(id)));
     }
-
 }
