@@ -1,20 +1,22 @@
 package com.codelab.crudspring.model;
 
 import com.codelab.crudspring.enuns.Categoria;
+import com.codelab.crudspring.enuns.Status;
 import com.codelab.crudspring.enuns.converters.CategoriaConverter;
+import com.codelab.crudspring.enuns.converters.StatusConverter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.sql.Update;
+import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.Length;
 
 @Data
 @Entity
-@SQLDelete(sql = "Update Course Set status ='Inativo' Where id=?")
+@SQLDelete(sql = "UPDATE Course SET status = 'Inativo' WHERE id = ?")
+@Where(clause = "status = 'Ativo'")
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,15 +30,13 @@ public class Course {
     private String name;
 
     @NotNull
-    @NotBlank
     @Column(length = 10 ,nullable = false)
     @Convert(converter = CategoriaConverter.class)
     private Categoria categoria;
 
     @NotNull
-    @NotBlank
-    @Length(max = 10)
-    @Column(length = 10 ,nullable = false)
-    private String status = "Ativo";
+    @Column(length = 10, nullable = false)
+    @Convert(converter = StatusConverter.class)
+    private Status status = Status.ACTIVE;
 
 }

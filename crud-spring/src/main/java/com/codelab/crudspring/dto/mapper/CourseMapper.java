@@ -12,14 +12,26 @@ public class CourseMapper {
         return new CourseDTO(course.getId(), course.getName(), course.getCategoria());}
 
     public Course toEntity(CourseDTO courseDTO) {
-        if (courseDTO == null){ return null;}
-    Course course = new Course();
+        if (courseDTO == null){ return null;
+        }
+        Course course = new Course();
         if ((courseDTO.id() != null)) {
             course.setId(courseDTO.id());
         }
         course.setName(courseDTO.name());
-        course.setCategoria(Categoria.FRONT_END);
+        course.setCategoria(convertCategoryValue(courseDTO.categoria().getValue()));
         return course;
+    }
+
+    public Categoria  convertCategoryValue(String value) {
+        if (value == null) {
+            return null;
+        }
+        return switch (value) {
+            case "Front-end" -> Categoria.FRONT_END;
+            case "Back-end" -> Categoria.BACK_END;
+            default -> throw new IllegalArgumentException("Categoria inválida: " + value);
+        };
     }
 }
 
