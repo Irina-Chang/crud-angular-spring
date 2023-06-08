@@ -1,14 +1,14 @@
 package com.codelab.crudspring.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
+@Data
 public class Lesson {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty("_id")
     private Long id;
@@ -18,4 +18,14 @@ public class Lesson {
 
     @Column(length = 11, nullable = false)
     private String youtubeUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "course_id", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Course course;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }

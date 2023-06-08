@@ -1,25 +1,41 @@
 package com.codelab.crudspring.dto.mapper;
 
 import com.codelab.crudspring.dto.CourseDTO;
+import com.codelab.crudspring.dto.LessonDTO;
 import com.codelab.crudspring.enuns.Categoria;
 import com.codelab.crudspring.model.Course;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class CourseMapper {
-    public CourseDTO toDTO(Course course){
-        if (course == null){return null;}
-        return new CourseDTO(course.getId(), course.getName(), course.getCategoria());}
+    public CourseDTO toDTO(Course course) {
+        if (course == null) {
+            return null;
+        }
+        List<LessonDTO> lessons = course.getLessons()
+                .stream()
+                .map(lesson -> new LessonDTO(lesson.getId(), lesson.getName(),
+                        lesson.getYoutubeUrl()))
+                .collect(Collectors.toList());
+        return new CourseDTO(course.getId(), course.getName(), course.getCategoria()
+                .getValue(), lessons);
+    }
 
     public Course toEntity(CourseDTO courseDTO) {
-        if (courseDTO == null){ return null;
+
+        if (courseDTO == null) {
+            return null;
         }
+
         Course course = new Course();
-        if ((courseDTO.id() != null)) {
+        if (courseDTO.id() != null) {
             course.setId(courseDTO.id());
         }
         course.setName(courseDTO.name());
-        course.setCategoria(convertCategoryValue(courseDTO.categoria().getValue()));
+        course.setCategoria(convertCategoryValue(courseDTO.categoria()));
         return course;
     }
 
