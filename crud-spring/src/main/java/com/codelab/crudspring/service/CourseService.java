@@ -2,6 +2,7 @@ package com.codelab.crudspring.service;
 
 import com.codelab.crudspring.dto.CourseDTO;
 import com.codelab.crudspring.dto.mapper.CourseMapper;
+import com.codelab.crudspring.enuns.Categoria;
 import com.codelab.crudspring.exception.RecordNotFoundException;
 import com.codelab.crudspring.repository.CourseRepository;
 import jakarta.validation.Valid;
@@ -44,7 +45,7 @@ public class CourseService {
         return  courseRepository.findById(id)
                 .map(recordFound ->{
                     recordFound.setName(course.name());
-                    recordFound.setCategoria(course.categoria());
+                    recordFound.setCategoria(Categoria.FRONT_END);
                     return courseMapper.toDTO(courseRepository.save(recordFound));
                 }).orElseThrow(()->new RecordNotFoundException(id));
     }

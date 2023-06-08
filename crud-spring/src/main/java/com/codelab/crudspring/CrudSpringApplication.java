@@ -1,5 +1,6 @@
 package com.codelab.crudspring;
 
+import com.codelab.crudspring.enuns.Categoria;
 import com.codelab.crudspring.model.Course;
 import com.codelab.crudspring.repository.CourseRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -21,7 +22,7 @@ public class CrudSpringApplication {
 
 			Course c = new Course();
 			c.setName("Angular e Spring");
-			c.setCategoria("Front-End");
+			c.setCategoria(Categoria.FRONT_END);
 
 			courseRepository.save(c);
 		};

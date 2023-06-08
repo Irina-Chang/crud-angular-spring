@@ -1,5 +1,7 @@
 package com.codelab.crudspring.model;
 
+import com.codelab.crudspring.enuns.Categoria;
+import com.codelab.crudspring.enuns.converters.CategoriaConverter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -27,10 +29,9 @@ public class Course {
 
     @NotNull
     @NotBlank
-    @Length(max = 10)
-    //@Pattern( regexp = "Back-end|Front-end")
     @Column(length = 10 ,nullable = false)
-    private String categoria;
+    @Convert(converter = CategoriaConverter.class)
+    private Categoria categoria;
 
     @NotNull
     @NotBlank
